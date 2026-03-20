@@ -57,9 +57,3 @@ Install by downloading a zip. After installing, log in as an administrator and v
 3. Copy the extracted `claude` folder into your Moodle `ai/provider/` directory so the path becomes:
    - `moodle/ai/provider/claude`
 4. Log in as an administrator and visit **Site administration → Notifications**.
-
-## Upgrading
-
-Download the new zip version that matches your Moodle version, replace the `ai/provider/claude` folder, then visit **Site administration → Notifications**.
-
-Copyright 2026 [Treesha Infotech](https://treeshainfotech.com/)
