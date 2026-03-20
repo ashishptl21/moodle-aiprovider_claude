@@ -1,0 +1,26 @@
+{
+    "model": "claude-sonnet-4-5-20250929",
+    "id": "msg_01Cd3y1A2pnisSFM82xR6uGg",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+        {
+            "type": "text",
+            "text": "Moodle is a free, open-source Learning Management System (LMS) used by educational institutions, businesses, and organizations worldwide. It provides educators with a platform to create online courses, distribute learning materials, administer assignments and quizzes, facilitate discussions, and track student progress. The name stands for \"Modular Object-Oriented Dynamic Learning Environment.\" Moodle supports various teaching methods and can be customized with plugins and themes. It enables both asynchronous and synchronous learning activities, includes tools for collaboration like forums and wikis, and offers comprehensive grading and reporting features. The platform is web-based, accessible from any device with internet connectivity, and serves millions of users globally."
+        }
+    ],
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "usage": {
+        "input_tokens": 75,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 150,
+        "service_tier": "standard",
+        "inference_geo": "not_available"
+    }
+}
