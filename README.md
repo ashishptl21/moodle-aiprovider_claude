@@ -27,11 +27,11 @@ A Moodle AI provider plugin that integrates [Claude AI](https://platform.claude.
 
 Each action (generate text, summarise text, explain text) can be configured independently with:
 
-| Setting            | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| Model              | The Claude model to use, fetched from the API                 |
+| Setting            | Description                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| Model              | The Claude model to use                 |
 | Endpoint           | The Claude API endpoint (pre-filled with the correct default) |
-| System instruction | Custom system prompt (text actions only)                       |
+| System instruction | Custom system prompt (text actions only)                      |
 | Extra parameters   | Additional model parameters        |
 
 ## Architecture
@@ -47,7 +47,7 @@ This plugin is licensed under the [GNU GPL v3 or later](http://www.gnu.org/copyl
 
 ## Installation
 
-Install by downloading a zip. After installing, log in as an administrator and visit **Site administration → Notifications** to complete the installation.
+Install by downloading a zip. Log in as an administrator and visit **Site administration → Plugins → Install plugin ** and upload the zip.
 
 ### Download the zip
 

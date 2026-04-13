@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'aiprovider_claude';
-$plugin->release      = '1.0';
-$plugin->version      = 2026031300;
+$plugin->release      = '1.0.1';
+$plugin->version      = 2026041300;
 $plugin->requires     = 2025041400;
-$plugin->supported    = [500, 501];
+$plugin->supported    = [500, 502];
 $plugin->maturity     = MATURITY_STABLE;
