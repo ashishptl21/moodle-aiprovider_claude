@@ -91,6 +91,9 @@ class definition extends base {
                     a: !empty($setting['help']['a']) ? $setting['help']['a'] : [],
                 );
             }
+            if (isset($setting['default'])) {
+                $mform->setDefault($key, $setting['default']);
+            }
             if (!empty($setting['required'])) {
                 $mform->addRule($key, get_string('required'), 'required', null, 'client');
             }

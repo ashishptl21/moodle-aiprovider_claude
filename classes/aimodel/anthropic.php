@@ -31,6 +31,11 @@ class anthropic extends base {
      */
     public static function get_models(): array {
         return [
+            'claude-opus-4-7' => self::create_model(
+                'claude-opus-4-7',
+                definition::MODEL_TYPE_TEXT,
+                self::get_settings(128000, ['temperature']),
+            ),
             'claude-opus-4-6' => self::create_model(
                 'claude-opus-4-6',
                 definition::MODEL_TYPE_TEXT,
@@ -78,25 +83,28 @@ class anthropic extends base {
      * Anthropic settings.
      *
      * @param int $maxtokensmax Max allowed max_tokens value.
+     * @param array|null $excludedsettings Optional list of setting keys going to be removed
      * @return array
      */
-    private static function get_settings(int $maxtokensmax = 4096): array {
-        return [
+    private static function get_settings(int $maxtokensmax = 4096, ?array $excludedsettings = null): array {
+        $settings = [
             // Temperature – Use a lower value to decrease randomness in responses.
             'temperature' => self::setting(
                 'settings_temperature',
                 PARAM_FLOAT,
                 'settings_temperature',
                 ['min' => 0, 'max' => 1, 'default' => 1],
-                true
+                true,
+                1,
             ),
             // Max token – The maximum number of tokens to generate in the response. Maximum token limits are strictly enforced.
             'max_tokens' => self::setting(
                 'settings_max_tokens',
                 PARAM_INT,
                 'settings_max_tokens',
-                ['min' => 1, 'max' => $maxtokensmax, 'default' => 4096],
+                ['min' => 1, 'max' => $maxtokensmax, 'default' => $maxtokensmax],
                 true,
+                $maxtokensmax,
             ),
             // Stop Sequences – Specify a character sequence to indicate where the model should stop.
             'stop_sequences' => self::setting(
@@ -107,5 +115,12 @@ class anthropic extends base {
                 false
             ),
         ];
+
+        // Filter out excluded keys.
+        if ($excludedsettings) {
+            $settings = array_filter($settings, fn($k) => !in_array($k, $excludedsettings), ARRAY_FILTER_USE_KEY);
+        }
+
+        return $settings;
     }
 }

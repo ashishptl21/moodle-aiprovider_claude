@@ -81,6 +81,7 @@ class provider extends \core_ai\provider {
         ];
         if (in_array($actionname, self::get_valid_actions())) {
             $mform = new form\action_generate_text_form(customdata: $customdata);
+            $mform->definition_after_data();
             return $mform->get_defaults();
         }
 

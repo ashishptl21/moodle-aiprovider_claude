@@ -32,6 +32,7 @@ abstract class base {
      * @param string|null $helpidentifier Help lang string identifier.
      * @param array $helpa Help placeholders.
      * @param bool $required Whether field is required.
+     * @param mixed $default Default field value.
      * @return array
      */
     protected static function setting(
@@ -40,6 +41,7 @@ abstract class base {
         ?string $helpidentifier = null,
         array $helpa = [],
         bool $required = false,
+        mixed $default = null,
     ): array {
         $setting = [
             'elementtype' => 'text',
@@ -62,6 +64,10 @@ abstract class base {
 
         if ($required) {
             $setting['required'] = true;
+        }
+
+        if ($default) {
+            $setting['default'] = $default;
         }
 
         return $setting;

@@ -182,6 +182,9 @@ class action_form extends action_settings_form {
         if (isset($this->storedmodelsettings[$modeltemplate])) {
             $this->storedmodelsettings = [$modeltemplate => $this->storedmodelsettings[$modeltemplate]];
         }
+        if (empty($this->storedmodelsettings) && isset($this->actionconfig)) {
+            $this->storedmodelsettings = [$modeltemplate => $this->actionconfig];
+        }
 
         // Model chooser.
         $mform->addElement(
