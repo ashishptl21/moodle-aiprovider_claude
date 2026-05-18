@@ -16,6 +16,7 @@
 
 namespace aiprovider_claude;
 
+use aiprovider_claude\provider as Aiprovider_claudeProvider;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -45,10 +46,7 @@ final class provider_test extends \advanced_testcase {
 
         // Create the provider instance.
         $this->manager = \core\di::get(\core_ai\manager::class);
-        $this->provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_claude\provider',
-            name: 'dummy',
-        );
+        $this->provider = $this->create_provider();
         $this->aicomponentstrings = get_string_manager()->load_component_strings('core_ai', 'lang');
     }
 
@@ -58,10 +56,9 @@ final class provider_test extends \advanced_testcase {
     public function test_get_action_list(): void {
         $actionlist = $this->provider->get_action_list();
         $this->assertIsArray($actionlist);
-        $this->assertCount(3, $actionlist);
+        $this->assertCount(2, $actionlist);
         $this->assertContains(\core_ai\aiactions\generate_text::class, $actionlist);
         $this->assertContains(\core_ai\aiactions\summarise_text::class, $actionlist);
-        $this->assertContains(\core_ai\aiactions\explain_text::class, $actionlist);
     }
 
     /**
@@ -86,11 +83,7 @@ final class provider_test extends \advanced_testcase {
             'enableglobalratelimit' => true,
             'globalratelimit' => 5,
         ];
-        $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_claude\provider',
-            name: 'dummy',
-            config: $config,
-        );
+        $provider = $this->create_provider(overrideconfig: $config);
 
         $contextid = 1;
         $userid = 1;
@@ -138,18 +131,58 @@ final class provider_test extends \advanced_testcase {
      * Test is_provider_configured.
      */
     public function test_is_provider_configured(): void {
+        global $CFG;
 
         // No configured values.
-        $this->assertFalse($this->provider->is_provider_configured());
+        $this->assertTrue($this->provider->is_provider_configured());
 
-        // Properly configured values.
-        $updatedprovider = $this->manager->update_provider_instance(
-            provider: $this->provider,
-            config: [
-                'apikey' => 'dummy123xyz',
-                'apiversion' => '2023-06-01',
+        $updatedprovider = $this->create_provider(overrideconfig: [
+            'apikey' => '',
+            'apiversion' => '2023-06-01',
+        ]);
+
+        $this->assertFalse($updatedprovider->is_provider_configured());
+    }
+
+    /**
+     * Create the provider object.
+     *
+     * @param string $actionclass The action class to use.
+     * @param array $actionconfig The action configuration to use.
+     * @param array $overrideconfig The config array to override defaults.
+     */
+    public function create_provider(
+        string $actionclass = \core_ai\aiactions\generate_text::class,
+        array $actionconfig = [],
+        array $overrideconfig = [],
+    ): \core_ai\provider {
+        global $CFG;
+        $manager = \core\di::get(\core_ai\manager::class);
+        $config = [
+            'apikey' => 'dummy123xyz',
+            'apiversion' => '2023-06-01',
+            'enableuserratelimit' => true,
+            'userratelimit' => 1,
+            'enableglobalratelimit' => true,
+            'globalratelimit' => 1,
+        ];
+        $defaultactionconfig = [
+            $actionclass => [
+                'settings' => [
+                    'model' => 'claude-sonnet-4-5-20250929',
+                    'endpoint' => 'https://api.anthropic.com/v1/messages',
+                ],
             ],
-        );
-        $this->assertTrue($updatedprovider->is_provider_configured());
+        ];
+        foreach ($actionconfig as $key => $value) {
+            $defaultactionconfig[$actionclass]['settings'][$key] = $value;
+        }
+
+        $config['actionconfig'] = json_encode($defaultactionconfig);
+        $config = array_merge($config, $overrideconfig);
+
+        $CFG->forced_plugin_settings['aiprovider_claude'] = $config;
+
+        return new Aiprovider_claudeProvider();
     }
 }

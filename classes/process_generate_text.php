@@ -79,6 +79,7 @@ class process_generate_text extends abstract_processor {
      * @return array The response.
      */
     protected function handle_api_success(ResponseInterface $response): array {
+        global $CFG;
         $responsebody = $response->getBody();
         $bodyobj = json_decode($responsebody->getContents());
 
@@ -87,7 +88,7 @@ class process_generate_text extends abstract_processor {
             'id' => $bodyobj->id,
             'fingerprint' => null,
             'generatedcontent' => $bodyobj->content[0]->text,
-            'finishreason' => $bodyobj->stop_reason,
+            'finishreason' => clean_param($bodyobj->stop_reason, PARAM_ALPHA),
             'prompttokens' => $bodyobj->usage->input_tokens,
             'completiontokens' => $bodyobj->usage->output_tokens,
             'model' => $bodyobj->model ?? $this->get_model(), // Fallback to config model.

@@ -17,7 +17,7 @@
 namespace aiprovider_claude\form;
 
 use aiprovider_claude\helper;
-use core_ai\form\action_settings_form;
+use aiprovider_claude\local\compatibility\form\action_settings_form;
 
 /**
  * Base action settings form for provider.

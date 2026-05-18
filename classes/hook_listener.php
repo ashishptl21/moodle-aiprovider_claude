@@ -16,9 +16,7 @@
 
 namespace aiprovider_claude;
 
-use aiprovider_claude\model\base;
-use core_ai\hook\after_ai_action_settings_form_hook;
-use core_ai\hook\after_ai_provider_form_hook;
+use aiprovider_claude\local\compatibility\hook\after_ai_action_settings_form_hook;
 
 /**
  * Hook listener for Open AI provider.
@@ -28,40 +26,6 @@ use core_ai\hook\after_ai_provider_form_hook;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_listener {
-    /**
-     * Hook listener for the Open AI instance setup form.
-     *
-     * @param after_ai_provider_form_hook $hook The hook to add to the AI instance setup.
-     */
-    public static function set_form_definition_for_provider(after_ai_provider_form_hook $hook): void {
-        if ($hook->plugin !== 'aiprovider_claude') {
-            return;
-        }
-
-        $mform = $hook->mform;
-
-        // Required setting to store API key.
-        $mform->addElement(
-            'passwordunmask',
-            'apikey',
-            get_string('apikey', 'aiprovider_claude'),
-            ['size' => 75],
-        );
-        $mform->addHelpButton('apikey', 'apikey', 'aiprovider_claude');
-        $mform->addRule('apikey', get_string('required'), 'required', null, 'client');
-
-        // Setting to store organization ID.
-        $mform->addElement(
-            'text',
-            'apiversion',
-            get_string('apiversion', 'aiprovider_claude'),
-            ['size' => 25],
-        );
-        $mform->setType('apiversion', PARAM_TEXT);
-        $mform->addHelpButton('apiversion', 'apiversion', 'aiprovider_claude');
-        $mform->addRule('apiversion', get_string('required'), 'required', null, 'client');
-        $mform->setDefault('apiversion', '2023-06-01');
-    }
 
     /**
      * Hook listener for the Open AI action settings form.
@@ -100,6 +64,18 @@ class hook_listener {
                         $settingshelp = \html_writer::tag('p', get_string('settings_help', 'aiprovider_claude'));
                         $mform->addElement('html', $settingshelp);
                         $targetmodel->add_model_settings($mform);
+                        if ($mform->optional_param('updateactionsettings', null, PARAM_BOOL)) {
+                            $defaultsettings = [];
+                            foreach ($targetmodel->get_model_settings() as $settingsname => $settingdata) {
+                                if (isset($settingdata['default'])) {
+                                    $defaultsettings[$settingsname] = $settingdata['default'];
+                                }
+                            }
+                            $defaultsettings[$targetmodel->get_model_name()] = $defaultsettings;
+                            $mform->getElement('modeltemplate')->updateAttributes([
+                                'data-storedmodelsettings' => json_encode($defaultsettings),
+                            ]);
+                        }
                     }
                 }
             }

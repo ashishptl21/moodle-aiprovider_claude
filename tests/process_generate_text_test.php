@@ -16,6 +16,7 @@
 
 namespace aiprovider_claude;
 
+use aiprovider_claude\provider as Aiprovider_claudeProvider;
 use core_ai\aiactions\base;
 use core_ai\provider;
 use GuzzleHttp\Psr7\Response;
@@ -74,11 +75,14 @@ final class process_generate_text_test extends \advanced_testcase {
      *
      * @param string $actionclass The action class to use.
      * @param array $actionconfig The action configuration to use.
+     * @param array $overrideconfig The config array to override defaults.
      */
     public function create_provider(
         string $actionclass,
         array $actionconfig = [],
+        array $overrideconfig = [],
     ): \core_ai\provider {
+        global $CFG;
         $manager = \core\di::get(\core_ai\manager::class);
         $config = [
             'apikey' => 'dummy123xyz',
@@ -99,14 +103,13 @@ final class process_generate_text_test extends \advanced_testcase {
         foreach ($actionconfig as $key => $value) {
             $defaultactionconfig[$actionclass]['settings'][$key] = $value;
         }
-        $provider = $manager->create_provider_instance(
-            classname: '\aiprovider_claude\provider',
-            name: 'dummy',
-            config: $config,
-            actionconfig: $defaultactionconfig,
-        );
 
-        return $provider;
+        $config['actionconfig'] = json_encode($defaultactionconfig);
+        $config = array_merge($config, $overrideconfig);
+
+        $CFG->forced_plugin_settings['aiprovider_claude'] = $config;
+
+        return new Aiprovider_claudeProvider();
     }
 
     /**
@@ -245,10 +248,9 @@ final class process_generate_text_test extends \advanced_testcase {
             'Moodle is a free, open-source Learning Management System (LMS)',
             $result['generatedcontent']
         );
-        $this->assertEquals('end_turn', $result['finishreason']);
+        $this->assertEquals('endturn', $result['finishreason']);
         $this->assertEquals('75', $result['prompttokens']);
         $this->assertEquals('150', $result['completiontokens']);
-        $this->assertEquals('claude-sonnet-4-5-20250929', $result['model']);
     }
 
     /**
@@ -276,10 +278,9 @@ final class process_generate_text_test extends \advanced_testcase {
             'Moodle is a free, open-source Learning Management System (LMS)',
             $result['generatedcontent']
         );
-        $this->assertEquals('end_turn', $result['finishreason']);
+        $this->assertEquals('endturn', $result['finishreason']);
         $this->assertEquals('75', $result['prompttokens']);
         $this->assertEquals('150', $result['completiontokens']);
-        $this->assertEquals('claude-sonnet-4-5-20250929', $result['model']);
     }
 
     /**
@@ -295,10 +296,9 @@ final class process_generate_text_test extends \advanced_testcase {
             'success' => true,
             'id' => 'msg_01Cd3y1A2pnisSFM82xR6uGg',
             'generatedcontent' => 'Moodle is a free, open-source Learning Management System (LMS)',
-            'finishreason' => 'end_turn',
+            'finishreason' => 'endturn',
             'prompttokens' => '75',
             'completiontokens' => '150',
-            'model' => 'claude-sonnet-4-5-20250929',
         ];
 
         $result = $method->invoke($processor, $response);
@@ -308,7 +308,6 @@ final class process_generate_text_test extends \advanced_testcase {
         $this->assertEquals('generate_text', $result->get_actionname());
         $this->assertEquals($response['success'], $result->get_success());
         $this->assertEquals($response['generatedcontent'], $result->get_response_data()['generatedcontent']);
-        $this->assertEquals($response['model'], $result->get_response_data()['model']);
     }
 
     /**
@@ -406,20 +405,16 @@ final class process_generate_text_test extends \advanced_testcase {
             'apiversion' => '2023-06-01',
             'enableuserratelimit' => true,
             'userratelimit' => 1,
+            'enableglobalratelimit' => false,
         ];
-        $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_claude\provider',
-            name: 'dummy',
-            config: $config,
-            actionconfig: [
-                \core_ai\aiactions\generate_text::class => [
-                    'settings' => [
-                        'model' => 'claude-sonnet-4-5-20250929',
-                        'endpoint' => 'https://api.anthropic.com/v1/messages',
-                        'systeminstruction' => get_string('action_generate_text_instruction', 'core_ai'),
-                    ],
-                ],
+        $provider = $this->create_provider(
+            \core_ai\aiactions\generate_text::class,
+            [
+                'model' => 'claude-sonnet-4-5-20250929',
+                'endpoint' => 'https://api.anthropic.com/v1/messages',
+                'systeminstruction' => get_string('action_generate_text_instruction', 'core_ai'),
             ],
+            $config,
         );
 
         // Mock the http client to return a successful response.
@@ -504,20 +499,16 @@ final class process_generate_text_test extends \advanced_testcase {
             'apiversion' => '2023-06-01',
             'enableglobalratelimit' => true,
             'globalratelimit' => 1,
+            'enableuserratelimit' => false,
         ];
-        $provider = $this->manager->create_provider_instance(
-            classname: '\aiprovider_claude\provider',
-            name: 'dummy',
-            config: $config,
-            actionconfig: [
-                \core_ai\aiactions\generate_text::class => [
-                    'settings' => [
-                        'model' => 'claude-sonnet-4-5-20250929',
-                        'endpoint' => 'https://api.anthropic.com/v1/messages',
-                        'systeminstruction' => get_string('action_generate_text_instruction', 'core_ai'),
-                    ],
-                ],
+        $provider = $this->create_provider(
+            \core_ai\aiactions\generate_text::class,
+            [
+                'model' => 'claude-sonnet-4-5-20250929',
+                'endpoint' => 'https://api.anthropic.com/v1/messages',
+                'systeminstruction' => get_string('action_generate_text_instruction', 'core_ai'),
             ],
+            $config,
         );
 
         // Mock the http client to return a successful response.

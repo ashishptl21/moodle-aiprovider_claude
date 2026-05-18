@@ -45,6 +45,10 @@ $string['apikey_help'] = 'Get a key from your <a href="https://platform.claude.c
 $string['apiversion'] = 'Api version';
 $string['apiversion_help'] = 'Api version to used in api call in headers';
 $string['custom_model_name'] = 'Custom model name';
+$string['enableglobalratelimit'] = 'Set site-wide rate limit';
+$string['enableglobalratelimit_desc'] = 'Limit the number of requests that the OpenAI API provider can receive across the entire site every hour.';
+$string['enableuserratelimit'] = 'Set user rate limit';
+$string['enableuserratelimit_desc'] = 'Limit the number of requests each user can make to the OpenAI API provider every hour.';
 $string['extraparams'] = 'Extra parameters';
 $string['extraparams_help'] = 'Extra parameters can be configured here. We support JSON format. For example:
 <pre>
@@ -53,6 +57,8 @@ $string['extraparams_help'] = 'Extra parameters can be configured here. We suppo
     "max_completion_tokens": 100
 }
 </pre>';
+$string['globalratelimit'] = 'Maximum number of site-wide requests';
+$string['globalratelimit_desc'] = 'The number of site-wide requests allowed per hour.';
 $string['invalidjson'] = 'Invalid JSON string';
 $string['model_claude-haiku-4-5-20251001'] = 'claude-haiku-4-5-20251001';
 $string['model_claude-opus-4-1-20250805'] = 'claude-opus-4-1-20250805';
@@ -70,6 +76,7 @@ $string['privacy:metadata:aiprovider_claude:model'] = 'The model used to generat
 $string['privacy:metadata:aiprovider_claude:numberimages'] = 'When generating images the number of images used in the response.';
 $string['privacy:metadata:aiprovider_claude:prompttext'] = 'The user entered text prompt used to generate the response.';
 $string['privacy:metadata:aiprovider_claude:responseformat'] = 'The format of the response. When generating images.';
+$string['providerinstanceactionupdated'] = '{$a} action settings updated';
 $string['settings'] = 'Settings';
 $string['settings_help'] = 'Adjust the settings below to customise how requests are sent to Claude.';
 $string['settings_max_tokens'] = 'Max Tokens';
@@ -80,3 +87,5 @@ $string['settings_stop_sequences'] = 'Stop Sequence';
 $string['settings_stop_sequences_help'] = 'Specify a character sequence to indicate where the model should stop';
 $string['settings_temperature'] = 'Temperature';
 $string['settings_temperature_help'] = 'Use a lower value to decrease randomness in responses. Min: {$a->min}, Max: {$a->max}, Default: {$a->default}.';
+$string['userratelimit'] = 'Maximum number of requests per user';
+$string['userratelimit_desc'] = 'The number of requests allowed per hour, per user.';

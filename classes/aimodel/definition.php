@@ -16,7 +16,7 @@
 
 namespace aiprovider_claude\aimodel;
 
-use core_ai\aimodel\base;
+use aiprovider_claude\local\compatibility\aimodel\base;
 use MoodleQuickForm;
 
 /**

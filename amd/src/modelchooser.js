@@ -20,13 +20,55 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {populateFields, clearFields} from 'core_ai/helper';
 const Selectors = {
     fields: {
         selector: '[data-modelchooser-field="selector"]',
         updateButton: '[data-modelchooser-field="updateButton"]',
         modelSettingsContainer: 'id_modelsettingsheadercontainer',
     },
+};
+
+/**
+ * Populate fields using settings that match key to name of input.
+ *
+ * @param {Object} settings The settings to populate with.
+ * @param {String} containerId The target container.
+ */
+const populateFields = (settings, containerId) => {
+    const container = document.getElementById(containerId);
+
+    if (container) {
+        for (const [key, value] of Object.entries(settings)) {
+            const field = container.querySelector(`[name="${key}"]`);
+            if (field) {
+                field.value = value;
+            }
+        }
+    }
+};
+
+
+
+/**
+ * Reset all fields in a container.
+ *
+ * @param {String} containerId The target container.
+ */
+const clearFields = (containerId) => {
+    const container = document.getElementById(containerId);
+
+    if (container) {
+        const allFormElements = container.querySelectorAll('input, select, textarea');
+        allFormElements.forEach(element => {
+            if (element.type === 'checkbox' || element.type === 'radio') {
+                element.checked = false;
+            } else if (element.tagName === 'SELECT') {
+                element.selectedIndex = 0;
+            } else {
+                element.value = '';
+            }
+        });
+    }
 };
 
 /**

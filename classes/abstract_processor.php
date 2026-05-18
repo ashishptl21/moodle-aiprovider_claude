@@ -32,6 +32,9 @@ use Psr\Http\Message\UriInterface;
  * @copyright  2026 Treesha Infotech <dev@treeshainfotech.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+/**
+ * @property-read provider $provider
+ */
 abstract class abstract_processor extends process_base {
     /**
      * Get the endpoint URI.

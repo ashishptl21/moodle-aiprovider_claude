@@ -26,12 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $callbacks = [
     [
-        'hook' => \core_ai\hook\after_ai_provider_form_hook::class,
-        'callback' => \aiprovider_claude\hook_listener::class . '::set_form_definition_for_provider',
-    ],
-
-    [
-        'hook' => \core_ai\hook\after_ai_action_settings_form_hook::class,
+        'hook' => \aiprovider_claude\local\compatibility\hook\after_ai_action_settings_form_hook::class,
         'callback' => \aiprovider_claude\hook_listener::class . '::set_model_form_definition_for_provider',
     ],
 ];
